@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-requireAuth(['citizen', 'volunteer']);
+requireAuth(['citizen', 'volunteer', 'responder']);
 $pageTitle = 'Public Advisories';
 $pageSubtitle = 'Latest announcements from the operations center.';
 
