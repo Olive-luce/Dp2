@@ -125,7 +125,11 @@ include_once __DIR__ . '/../includes/header.php';
                         </div>
                         <?php $updates = fetchIncidentUpdates($pdo, (int) $report['id']); ?>
                         <?php if ($updates): ?>
-                            <div class="mt-2 text-muted"><small><i class="fa-solid fa-clock-rotate-left me-1"></i><?php echo htmlspecialchars($updates[0]['update_text']); ?></small></div>
+                            <div class="mt-2 text-muted">
+                                <?php foreach (array_slice($updates, 0, 4) as $update): ?>
+                                    <div><small><i class="fa-solid fa-clock-rotate-left me-1"></i><?php echo htmlspecialchars($update['update_text']); ?> &middot; <?php echo htmlspecialchars($update['created_at']); ?></small></div>
+                                <?php endforeach; ?>
+                            </div>
                         <?php endif; ?>
                     </li>
                 <?php endforeach; else: ?>

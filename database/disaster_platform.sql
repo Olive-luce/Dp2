@@ -331,10 +331,10 @@ INSERT INTO user_roles (user_id, role_id, status) VALUES
 (3, 3, 'active'),
 (4, 4, 'active');
 
-INSERT INTO disaster_incidents (title, description, incident_type, severity, latitude, longitude, status, reported_by, assigned_to) VALUES
-('Flooded Road Near Market', 'Heavy rain caused severe flooding and blocked access.', 'Flood', 'high', 14.5995, 120.9842, 'in_progress', 4, 2),
-('Power Outage in District 3', 'A localized outage affected several households.', 'Power Outage', 'medium', 14.6200, 121.0000, 'acknowledged', 4, 2),
-('Medical Supply Shortage', 'Urgent need for first aid supplies in the north zone.', 'Medical', 'high', 14.6100, 120.9950, 'reported', 4, 2);
+INSERT INTO disaster_incidents (title, description, incident_type, severity, latitude, longitude, address, status, reported_by, assigned_to) VALUES
+('Flooded Road Near Market', 'Heavy rain caused severe flooding and blocked access.', 'Flood', 'high', 23.8103, 90.4125, 'Dhaka', 'in_progress', 4, 2),
+('Power Outage in District 3', 'A localized outage affected several households.', 'Power Outage', 'medium', 22.3569, 91.7832, 'Chattogram', 'acknowledged', 4, 2),
+('Medical Supply Shortage', 'Urgent need for first aid supplies in the north zone.', 'Medical', 'high', 24.3745, 88.6042, 'Rajshahi', 'reported', 4, 2);
 
 INSERT INTO incident_updates (incident_id, update_text, status) VALUES
 (1, 'Response team dispatched to the market area.', 'active'),

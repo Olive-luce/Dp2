@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             severity: document.getElementById('severity').value,
             description: document.getElementById('description').value,
             reporter: document.getElementById('reporter').value,
-            address: 'Selected location',
+            address: latitudeInput.value + ', ' + longitudeInput.value,
             status: 'reported'
         };
 
