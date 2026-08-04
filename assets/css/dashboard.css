@@ -41,9 +41,12 @@
     font-size: 1.1rem;
 }
 
-.stat-card.success .stat-icon { background: rgba(22, 163, 74, 0.12); color: var(--success); }
-.stat-card.warning .stat-icon { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
-.stat-card.danger .stat-icon { background: rgba(220, 38, 38, 0.12); color: var(--danger); }
+.stat-card.success .stat-icon,
+.stat-icon.success { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+.stat-card.warning .stat-icon,
+.stat-icon.warning { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+.stat-card.danger .stat-icon,
+.stat-icon.danger { background: rgba(220, 38, 38, 0.12); color: var(--danger); }
 
 .hero-panel {
     position: relative;
@@ -67,9 +70,16 @@
 
 .hero-panel .eyebrow,
 .hero-panel h1,
+.hero-panel h2,
+.hero-panel h3,
+.hero-panel h4,
+.hero-panel h5,
+.hero-panel h6,
 .hero-panel p,
+.hero-panel .text-secondary,
+.hero-panel .text-muted,
 .hero-panel .badge {
-    color: white;
+    color: white !important;
 }
 
 .hero-panel .badge {
@@ -80,9 +90,27 @@
     background: rgba(255,255,255,0.16);
 }
 
-.hero-panel h1 {
-    font-size: clamp(2rem, 3vw, 2.6rem);
+.hero-panel h1,
+.hero-panel h2 {
+    font-size: clamp(1.8rem, 2.6vw, 2.4rem);
     max-width: 760px;
+}
+
+.hero-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-panel .btn-primary {
+    background: white;
+    color: var(--primary);
+    border-color: white;
+}
+
+.hero-panel .btn-outline-primary {
+    background: transparent;
+    color: white;
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 .hero-panel .hero-actions {
@@ -98,9 +126,18 @@
     min-height: 360px;
 }
 
-.chart-card canvas {
+.chart-frame {
+    position: relative;
     flex: 1;
-    min-height: 240px;
+    min-height: 260px;
+    max-height: 320px;
+}
+
+.chart-frame canvas {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .info-stack {

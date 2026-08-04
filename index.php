@@ -11,16 +11,16 @@ if (!empty($_SESSION['user_id'])) {
 
 $pageTitle = 'Community Disaster Response Platform';
 $pageSubtitle = 'Modern coordination for incidents, volunteers, shelters, resources, and public communications.';
-$pageActions = '<a href="' . BASE_URL . '/auth/register.php" class="btn btn-primary">Create Account</a><a href="' . BASE_URL . '/auth/login.php" class="btn btn-outline-primary">Login</a>';
-$pageContent = <<<'HTML'
+$baseUrl = BASE_URL;
+$pageContent = <<<HTML
 <div class="dashboard-grid">
     <div class="card hero-panel animate-on-scroll">
         <span class="badge badge-primary mb-2">Community Safety Network</span>
         <h2 class="mb-2">Coordinate disaster response with clarity and speed.</h2>
         <p class="text-secondary mb-3">A professional emergency operations platform for incident management, volunteer coordination, shelter readiness, resource tracking, and real-time communications.</p>
         <div class="hero-actions">
-            <a href="/Dp2/auth/register.php" class="btn btn-primary">Create Account</a>
-            <a href="/Dp2/auth/login.php" class="btn btn-outline-primary">Login</a>
+            <a href="{$baseUrl}/auth/register.php" class="btn btn-primary">Create Account</a>
+            <a href="{$baseUrl}/auth/login.php" class="btn btn-outline-primary">Login</a>
         </div>
     </div>
     <div class="card animate-on-scroll">

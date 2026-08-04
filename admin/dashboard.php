@@ -7,7 +7,8 @@ requireAuth(['admin']);
 $pageTitle = 'Admin Command Dashboard';
 $pageSubtitle = 'Monitor operations, incidents, volunteers, and response readiness from a unified view.';
 $pageActions = '<a href="' . BASE_URL . '/admin/incidents.php" class="btn btn-primary"><i class="fa-solid fa-burst me-2"></i>Manage Incidents</a>';
-$pageContent = <<<'HTML'
+$baseUrl = BASE_URL;
+$pageContent = <<<HTML
 <div class="dashboard-grid">
     <div class="card stat-card">
         <div class="d-flex justify-content-between align-items-start">
@@ -45,7 +46,7 @@ $pageContent = <<<'HTML'
                 <p class="card-subtitle">Operational readiness across active response zones.</p>
             </div>
         </div>
-        <canvas data-chart></canvas>
+        <div class="chart-frame"><canvas data-chart></canvas></div>
     </div>
     <div class="card">
         <div class="card-header">
@@ -55,10 +56,10 @@ $pageContent = <<<'HTML'
             </div>
         </div>
         <div class="card-body">
-            <a class="btn btn-outline-primary w-100 mb-2" href="' . BASE_URL . '/admin/incidents.php"><i class="fa-solid fa-burst me-2"></i>Manage Incidents</a>
-            <a class="btn btn-outline-primary w-100 mb-2" href="' . BASE_URL . '/admin/volunteers.php"><i class="fa-solid fa-users me-2"></i>Manage Volunteers</a>
-            <a class="btn btn-outline-primary w-100 mb-2" href="' . BASE_URL . '/modules/incidents/map.php"><i class="fa-solid fa-map-location-dot me-2"></i>View Live Map</a>
-            <a class="btn btn-outline-primary w-100" href="' . BASE_URL . '/admin/reports.php"><i class="fa-solid fa-chart-line me-2"></i>View Reports</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{$baseUrl}/admin/incidents.php"><i class="fa-solid fa-burst me-2"></i>Manage Incidents</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{$baseUrl}/admin/volunteers.php"><i class="fa-solid fa-users me-2"></i>Manage Volunteers</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{$baseUrl}/modules/incidents/map.php"><i class="fa-solid fa-map-location-dot me-2"></i>View Live Map</a>
+            <a class="btn btn-outline-primary w-100" href="{$baseUrl}/admin/reports.php"><i class="fa-solid fa-chart-line me-2"></i>View Reports</a>
         </div>
     </div>
 </div>

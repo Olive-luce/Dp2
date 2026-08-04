@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Professional emergency operations dashboard for disaster coordination.">
     <meta name="theme-color" content="#0f172a">
-    <title><?php echo APP_NAME; ?></title>
+    <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) . ' · ' . APP_NAME : APP_NAME; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,3 +33,17 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="content-area">
             <div class="content-scroll">
                 <main class="main-content" id="mainContent">
+                <?php if (!empty($pageTitle) && empty($skipPageHeader)): ?>
+                    <div class="page-header">
+                        <div class="page-title-group">
+                            <div class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Emergency Operations Center</div>
+                            <h1 class="page-title"><?php echo htmlspecialchars($pageTitle); ?></h1>
+                            <?php if (!empty($pageSubtitle)): ?>
+                                <p class="page-subtitle"><?php echo htmlspecialchars($pageSubtitle); ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (!empty($pageActions)): ?>
+                            <div class="page-actions"><?php echo $pageActions; ?></div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>

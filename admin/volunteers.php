@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['admin']);
+$pageTitle = 'Volunteer Management';
+$pageSubtitle = 'Register volunteers and track availability across missions.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row g-4">

@@ -4,23 +4,14 @@ require_once __DIR__ . '/../../includes/auth.php';
 
 requireAuth(['admin', 'responder', 'volunteer', 'citizen']);
 
+$pageTitle = 'Disaster Interactive Map';
+$pageSubtitle = 'Map view with incident pins, search, and role-based reporting.';
+$pageActions = '<button class="btn btn-outline-primary" id="toggleSatellite"><i class="fa-solid fa-satellite-dish me-2"></i>Toggle Satellite</button>'
+    . '<button class="btn btn-primary" id="locateMe"><i class="fa-solid fa-location-crosshairs me-2"></i>Locate Me</button>';
+
 include_once __DIR__ . '/../../includes/header.php';
 ?>
 <div class="row g-4">
-    <div class="col-12">
-        <div class="card p-4">
-            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
-                <div>
-                    <h2 class="fw-bold mb-1">Disaster Interactive Map</h2>
-                    <p class="text-muted mb-0">Bangladesh map view with incident pins, search, and role-based reporting.</p>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <button class="btn btn-outline-primary" id="toggleSatellite"><i class="fa-solid fa-satellite-dish me-2"></i>Toggle Satellite</button>
-                    <button class="btn btn-primary" id="locateMe"><i class="fa-solid fa-location-crosshairs me-2"></i>Locate Me</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="col-lg-8">
         <div class="card p-3">
             <div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
