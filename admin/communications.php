@@ -12,29 +12,41 @@ include_once __DIR__ . '/../includes/header.php';
     <div class="col-lg-4">
         <div class="card p-4">
             <h4 class="fw-bold mb-3">Communication Center</h4>
+            <div id="communicationFeedback" class="alert d-none" role="status"></div>
             <form id="communicationForm">
-                <input type="hidden" name="action" value="broadcast">
                 <div class="mb-3">
-                    <label class="form-label">Message</label>
-                    <textarea class="form-control" name="message" rows="4" required></textarea>
+                    <label class="form-label" for="commAction">Send as</label>
+                    <select class="form-select" id="commAction" name="action">
+                        <option value="broadcast">Direct notification</option>
+                        <option value="announcement">Public announcement</option>
+                    </select>
+                </div>
+                <div class="mb-3 d-none" id="commTitleGroup">
+                    <label class="form-label" for="commTitle">Title</label>
+                    <input class="form-control" id="commTitle" name="title" placeholder="Cyclone shelter opening">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Type</label>
-                    <select class="form-select" name="type">
+                    <label class="form-label" for="commMessage">Message</label>
+                    <textarea class="form-control" id="commMessage" name="message" rows="4" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="commType">Type</label>
+                    <select class="form-select" id="commType" name="type">
                         <option value="info">Info</option>
                         <option value="warning">Warning</option>
                         <option value="critical">Critical</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Audience</label>
-                    <select class="form-select" name="audience">
-                        <option value="all">Citizens & Volunteers</option>
+                    <label class="form-label" for="commAudience">Audience</label>
+                    <select class="form-select" id="commAudience" name="audience">
+                        <option value="all">Citizens &amp; Volunteers</option>
                         <option value="citizens">Citizens Only</option>
                         <option value="volunteers">Volunteers Only</option>
+                        <option value="responders">Responders Only</option>
                     </select>
                 </div>
-                <button class="btn btn-primary w-100" type="submit">Broadcast Message</button>
+                <button class="btn btn-primary w-100" type="submit">Send</button>
             </form>
         </div>
     </div>
@@ -49,7 +61,10 @@ include_once __DIR__ . '/../includes/header.php';
         <div class="card p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0">Notifications</h5>
-                <span id="notificationBadge" class="badge bg-danger">0</span>
+                <div class="d-flex align-items-center gap-2">
+                    <span id="notificationBadge" class="badge bg-danger">0</span>
+                    <button class="btn btn-sm btn-outline-primary" type="button" id="markAllRead">Mark all read</button>
+                </div>
             </div>
             <ul id="notificationList" class="list-group list-group-flush"></ul>
         </div>
