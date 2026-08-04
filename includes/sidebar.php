@@ -41,12 +41,15 @@ $activeClass = function ($target) use ($currentPath) {
         <?php elseif ($role === 'responder'): ?>
             <li class="nav-item"><a class="nav-link <?php echo $activeClass('responder/incidents.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/responder/incidents.php"><span class="nav-icon"><i class="fa-solid fa-burst"></i></span><span class="nav-label">Dispatch</span></a></li>
             <li class="nav-item"><a class="nav-link <?php echo $activeClass('responder/resources.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/responder/resources.php"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Resources</span></a></li>
+            <li class="nav-item"><a class="nav-link <?php echo $activeClass('citizen/communications.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/citizen/communications.php"><span class="nav-icon"><i class="fa-solid fa-bullhorn"></i></span><span class="nav-label">Advisories</span></a></li>
         <?php elseif ($role === 'volunteer'): ?>
             <li class="nav-item"><a class="nav-link <?php echo $activeClass('volunteer/tasks.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/volunteer/tasks.php"><span class="nav-icon"><i class="fa-solid fa-list-check"></i></span><span class="nav-label">Tasks</span></a></li>
             <li class="nav-item"><a class="nav-link <?php echo $activeClass('volunteer/checkin.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/volunteer/checkin.php"><span class="nav-icon"><i class="fa-solid fa-location-crosshairs"></i></span><span class="nav-label">Check-in</span></a></li>
+            <li class="nav-item"><a class="nav-link <?php echo $activeClass('citizen/communications.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/citizen/communications.php"><span class="nav-icon"><i class="fa-solid fa-bullhorn"></i></span><span class="nav-label">Advisories</span></a></li>
         <?php else: ?>
             <li class="nav-item"><a class="nav-link <?php echo $activeClass('citizen/report.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/citizen/report.php"><span class="nav-icon"><i class="fa-solid fa-exclamation"></i></span><span class="nav-label">Report Incident</span></a></li>
             <li class="nav-item"><a class="nav-link <?php echo $activeClass('citizen/shelters.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/citizen/shelters.php"><span class="nav-icon"><i class="fa-solid fa-person-shelter"></i></span><span class="nav-label">Shelters</span></a></li>
+            <li class="nav-item"><a class="nav-link <?php echo $activeClass('citizen/communications.php') ? 'active' : ''; ?>" href="<?php echo BASE_URL; ?>/citizen/communications.php"><span class="nav-icon"><i class="fa-solid fa-bullhorn"></i></span><span class="nav-label">Advisories</span></a></li>
         <?php endif; ?>
     </ul>
     <div class="mt-4 d-lg-none">
