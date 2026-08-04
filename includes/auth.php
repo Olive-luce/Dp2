@@ -31,6 +31,28 @@ function requireAuth(array $allowedRoles = []): void {
     }
 }
 
+/**
+ * JSON equivalents of requireAuth() for the API endpoints, which must answer
+ * with a status code and JSON body rather than redirecting to the login page.
+ */
+function requireApiAuth(): void {
+    if (!isAuthenticated()) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Authentication required']);
+        exit;
+    }
+}
+
+function requireApiRole(array $allowedRoles): void {
+    requireApiAuth();
+
+    if (!in_array($_SESSION['role'] ?? '', $allowedRoles, true)) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'You do not have access to this action']);
+        exit;
+    }
+}
+
 function requireGuest(): void {
     if (isAuthenticated()) {
         redirectToRoleDashboard($_SESSION['role'] ?? 'citizen');

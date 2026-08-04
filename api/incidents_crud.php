@@ -1,91 +1,122 @@
 <?php
 require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/incidents.php';
 
 header('Content-Type: application/json');
 
-if ($pdo === null) {
-    echo json_encode(['success' => false, 'message' => 'Database unavailable']);
-    exit;
-}
+requireApiAuth();
 
 $method = $_SERVER['REQUEST_METHOD'];
+$userId = (int) ($_SESSION['user_id'] ?? 0);
 
 if ($method === 'GET') {
-    $stmt = $pdo->query('SELECT i.id, i.title, i.description, i.incident_type, i.severity, i.status, i.latitude, i.longitude, i.created_at, u.full_name AS reporter, a.full_name AS assigned_responder FROM disaster_incidents i LEFT JOIN users u ON u.id = i.reported_by LEFT JOIN users a ON a.id = i.assigned_to ORDER BY i.created_at DESC');
-    echo json_encode($stmt->fetchAll());
+    echo json_encode(fetchIncidents($pdo));
     exit;
 }
 
 if ($method === 'POST') {
+    requireApiRole(['admin', 'responder', 'citizen', 'volunteer']);
+
     $payload = json_decode(file_get_contents('php://input'), true) ?? $_POST;
     $title = trim($payload['title'] ?? '');
     $description = trim($payload['description'] ?? '');
     $incidentType = trim($payload['incident_type'] ?? '');
-    $severity = trim($payload['severity'] ?? 'Medium');
-    $priority = trim($payload['priority'] ?? 'Medium');
-    $status = trim($payload['status'] ?? 'reported');
-    $priority = $priority ?: 'Medium';
-    $latitude = trim($payload['latitude'] ?? '');
-    $longitude = trim($payload['longitude'] ?? '');
-    $assignedTo = trim($payload['assigned_to'] ?? '');
-    $reporter = trim($payload['reporter'] ?? '');
-    $photo = $payload['photo'] ?? '';
 
-    if (!$title || !$description || !$incidentType || !$reporter) {
-        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+    if (!$title || !$description || !$incidentType) {
+        echo json_encode(['success' => false, 'message' => 'Title, description, and incident type are required']);
         exit;
     }
 
-    $userStmt = $pdo->prepare('SELECT id FROM users WHERE full_name = ? OR username = ? LIMIT 1');
-    $userStmt->execute([$reporter, $reporter]);
-    $user = $userStmt->fetch();
-    $reportedBy = $user['id'] ?? 1;
+    $reportedBy = $userId;
+    $reporter = trim($payload['reporter'] ?? '');
+    if ($reporter && ($_SESSION['role'] ?? '') === 'admin') {
+        $userStmt = $pdo->prepare('SELECT id FROM users WHERE full_name = ? OR username = ? LIMIT 1');
+        $userStmt->execute([$reporter, $reporter]);
+        $reportedBy = (int) ($userStmt->fetchColumn() ?: $userId);
+    }
 
-    $stmt = $pdo->prepare('INSERT INTO disaster_incidents (title, description, incident_type, severity, status, latitude, longitude, reported_by, assigned_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    $success = $stmt->execute([$title, $description, $incidentType, $severity, $status, $latitude ?: 0, $longitude ?: 0, $reportedBy, $assignedTo ?: null]);
+    $assignedTo = null;
+    $assignedName = trim($payload['assigned_to'] ?? '');
+    if ($assignedName !== '') {
+        $responderStmt = $pdo->prepare('SELECT id FROM users WHERE full_name = ? OR username = ? LIMIT 1');
+        $responderStmt->execute([$assignedName, $assignedName]);
+        $assignedTo = $responderStmt->fetchColumn() ?: null;
+    }
 
-    echo json_encode(['success' => $success, 'id' => $pdo->lastInsertId()]);
+    $incidentId = createIncident($pdo, [
+        'title' => $title,
+        'description' => $description,
+        'incident_type' => $incidentType,
+        'severity' => $payload['severity'] ?? 'medium',
+        'priority' => $payload['priority'] ?? 'medium',
+        'status' => $payload['status'] ?? 'reported',
+        'latitude' => $payload['latitude'] ?? null,
+        'longitude' => $payload['longitude'] ?? null,
+        'address' => trim($payload['address'] ?? '') ?: null,
+        'assigned_to' => $assignedTo,
+    ], $reportedBy);
+
+    echo json_encode(['success' => true, 'id' => $incidentId]);
     exit;
 }
 
 if ($method === 'PUT') {
+    requireApiRole(['admin', 'responder']);
+
     $payload = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id = $payload['id'] ?? null;
-    $status = $payload['status'] ?? null;
-    $severity = $payload['severity'] ?? null;
-    $priority = $payload['priority'] ?? null;
-    $assignedTo = $payload['assigned_to'] ?? null;
-    $description = $payload['description'] ?? null;
+    $id = (int) ($payload['id'] ?? 0);
 
     if (!$id) {
         echo json_encode(['success' => false, 'message' => 'Missing incident id']);
         exit;
+    }
+
+    if (isset($payload['status'])) {
+        setIncidentStatus($pdo, $id, (string) $payload['status'], trim($payload['note'] ?? ''));
     }
 
     $fields = [];
     $values = [];
-    if ($status !== null) { $fields[] = 'status = ?'; $values[] = $status; }
-    if ($severity !== null) { $fields[] = 'severity = ?'; $values[] = $severity; }
-    if ($priority !== null) { $fields[] = 'priority = ?'; $values[] = $priority; }
-    if ($assignedTo !== null) { $fields[] = 'assigned_to = ?'; $values[] = $assignedTo; }
-    if ($description !== null) { $fields[] = 'description = ?'; $values[] = $description; }
-    $values[] = $id;
+    if (isset($payload['severity'])) {
+        $fields[] = 'severity = ?';
+        $values[] = normalizeIncidentValue((string) $payload['severity'], INCIDENT_SEVERITIES, 'medium');
+    }
+    if (isset($payload['priority'])) {
+        $fields[] = 'priority = ?';
+        $values[] = normalizeIncidentValue((string) $payload['priority'], INCIDENT_PRIORITIES, 'medium');
+    }
+    if (array_key_exists('assigned_to', $payload)) {
+        $fields[] = 'assigned_to = ?';
+        $values[] = $payload['assigned_to'] !== '' ? (int) $payload['assigned_to'] : null;
+    }
+    if (isset($payload['description'])) {
+        $fields[] = 'description = ?';
+        $values[] = trim((string) $payload['description']);
+    }
 
-    $stmt = $pdo->prepare('UPDATE disaster_incidents SET ' . implode(', ', $fields) . ' WHERE id = ?');
-    $success = $stmt->execute($values);
-    echo json_encode(['success' => $success]);
+    if ($fields) {
+        $values[] = $id;
+        $stmt = $pdo->prepare('UPDATE disaster_incidents SET ' . implode(', ', $fields) . ' WHERE id = ?');
+        $stmt->execute($values);
+    }
+
+    echo json_encode(['success' => true]);
     exit;
 }
 
 if ($method === 'DELETE') {
-    $id = $_GET['id'] ?? null;
+    requireApiRole(['admin']);
+
+    $id = (int) ($_GET['id'] ?? 0);
     if (!$id) {
         echo json_encode(['success' => false, 'message' => 'Missing incident id']);
         exit;
     }
+
     $stmt = $pdo->prepare('DELETE FROM disaster_incidents WHERE id = ?');
-    $success = $stmt->execute([$id]);
-    echo json_encode(['success' => $success]);
+    echo json_encode(['success' => $stmt->execute([$id])]);
     exit;
 }
+
+echo json_encode(['success' => false, 'message' => 'Unsupported request']);

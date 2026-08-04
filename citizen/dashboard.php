@@ -1,8 +1,32 @@
 <?php
 require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/incidents.php';
 
 requireAuth(['citizen']);
+
+$userId = (int) ($_SESSION['user_id'] ?? 0);
+$myReports = fetchIncidents($pdo, ['reported_by' => $userId]);
+$reportedCount = count($myReports);
+
+$shelter = $pdo->query('SELECT SUM(current_occupancy) AS occupied, SUM(capacity) AS capacity FROM shelters')->fetch();
+$shelterCapacity = (int) ($shelter['capacity'] ?? 0) > 0
+    ? round(((int) $shelter['occupied'] / (int) $shelter['capacity']) * 100) . '%'
+    : 'n/a';
+
+$announcements = $pdo->query('SELECT title, body FROM announcements ORDER BY created_at DESC LIMIT 5')->fetchAll();
+$updateCount = count($announcements);
+
+$updatesHtml = '';
+foreach ($announcements as $announcement) {
+    $updatesHtml .= '<div class="info-item"><strong>' . htmlspecialchars($announcement['title']) . '</strong><br>' . htmlspecialchars($announcement['body']) . '</div>';
+}
+foreach (array_slice($myReports, 0, 3) as $report) {
+    $updatesHtml .= '<div class="info-item">' . htmlspecialchars($report['title']) . ' &middot; <strong>' . htmlspecialchars(str_replace('_', ' ', $report['status'])) . '</strong></div>';
+}
+if ($updatesHtml === '') {
+    $updatesHtml = '<div class="info-item text-muted">No public updates yet.</div>';
+}
 
 $pageTitle = 'Citizen Dashboard';
 $pageSubtitle = 'Track public safety updates and access the services you need.';
@@ -14,7 +38,7 @@ $pageContent = <<<HTML
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <p class="stat-label">Reported Issues</p>
-                <p class="stat-value">2</p>
+                <p class="stat-value">{$reportedCount}</p>
             </div>
             <div class="stat-icon"><i class="fa-solid fa-burst"></i></div>
         </div>
@@ -22,8 +46,8 @@ $pageContent = <<<HTML
     <div class="card stat-card">
         <div class="d-flex justify-content-between align-items-start">
             <div>
-                <p class="stat-label">Shelter Capacity</p>
-                <p class="stat-value">86%</p>
+                <p class="stat-label">Shelter Occupancy</p>
+                <p class="stat-value">{$shelterCapacity}</p>
             </div>
             <div class="stat-icon success"><i class="fa-solid fa-person-shelter"></i></div>
         </div>
@@ -32,7 +56,7 @@ $pageContent = <<<HTML
         <div class="d-flex justify-content-between align-items-start">
             <div>
                 <p class="stat-label">Public Updates</p>
-                <p class="stat-value">3</p>
+                <p class="stat-value">{$updateCount}</p>
             </div>
             <div class="stat-icon warning"><i class="fa-solid fa-bullhorn"></i></div>
         </div>
@@ -47,10 +71,7 @@ $pageContent = <<<HTML
             </div>
         </div>
         <div class="card-body">
-            <div class="info-stack">
-                <div class="info-item">Flooded road near the market is now under active response.</div>
-                <div class="info-item">The school gym shelter remains open with available space.</div>
-            </div>
+            <div class="info-stack">{$updatesHtml}</div>
         </div>
     </div>
     <div class="card">

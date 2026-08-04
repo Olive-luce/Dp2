@@ -2,6 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapElement = document.getElementById('map');
     if (!mapElement) return;
 
+    const apiUrl = (document.body.dataset.baseUrl || '') + '/api/map_incidents.php';
+
+    const escapeHtml = function (value) {
+        return String(value === null || value === undefined ? '' : value).replace(/[&<>"']/g, function (char) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+        });
+    };
+
     const map = L.map('map', { zoomControl: true }).setView([23.6850, 90.3563], 6);
     const baseLayers = {
         Street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }),
@@ -29,16 +37,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    const pinLayer = L.layerGroup().addTo(map);
+
     const renderPins = function () {
-        fetch('./api/map_incidents.php')
+        fetch(apiUrl, { headers: { Accept: 'application/json' } })
             .then(function (response) { return response.json(); })
             .then(function (pins) {
+                pinLayer.clearLayers();
+                if (!Array.isArray(pins)) return;
                 pins.forEach(function (pin) {
-                    const marker = L.marker([pin.latitude, pin.longitude], { icon: markerIcon(pin.incident_type) }).addTo(map);
+                    const marker = L.marker([pin.latitude, pin.longitude], { icon: markerIcon(pin.incident_type) }).addTo(pinLayer);
                     const role = document.body.dataset.role || 'citizen';
                     const canModify = role === 'admin' || role === 'responder';
-                    const popup = '<strong>' + pin.incident_type + '</strong><br>' + pin.description + '<br><small>Severity: ' + pin.severity + '<br>Reporter: ' + pin.reporter + '<br>Date: ' + pin.created_at + '</small>';
-                    marker.bindPopup(popup + (canModify ? '<br><button class="btn btn-sm btn-outline-danger mt-2 delete-pin" data-id="' + pin.id + '">Delete</button> <button class="btn btn-sm btn-outline-success mt-2 resolve-pin" data-id="' + pin.id + '">Resolve</button>' : ''));
+                    const popup = '<strong>' + escapeHtml(pin.incident_type) + '</strong><br>' + escapeHtml(pin.description)
+                        + '<br><small>Severity: ' + escapeHtml(pin.severity)
+                        + '<br>Status: ' + escapeHtml(String(pin.status).replace('_', ' '))
+                        + '<br>Reporter: ' + escapeHtml(pin.reporter)
+                        + '<br>Date: ' + escapeHtml(pin.created_at) + '</small>';
+                    marker.bindPopup(popup + (canModify ? '<br><button class="btn btn-sm btn-outline-danger mt-2 delete-pin" data-id="' + escapeHtml(pin.id) + '">Delete</button> <button class="btn btn-sm btn-outline-success mt-2 resolve-pin" data-id="' + escapeHtml(pin.id) + '">Resolve</button>' : ''));
                 });
             });
     };
@@ -80,6 +96,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
+        if (!latitudeInput.value || !longitudeInput.value) {
+            feedback.classList.remove('d-none', 'alert-info');
+            feedback.classList.add('alert-danger');
+            feedback.textContent = 'Click a point on the map to set the incident location first.';
+            return;
+        }
+
         const data = {
             latitude: latitudeInput.value,
             longitude: longitudeInput.value,
@@ -91,13 +114,17 @@ document.addEventListener('DOMContentLoaded', function () {
             status: 'reported'
         };
 
-        fetch('./api/map_incidents.php', {
+        fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         }).then(function (response) { return response.json(); }).then(function (result) {
             feedback.classList.remove('d-none');
-            feedback.textContent = result.success ? 'Report saved successfully.' : 'Unable to save report.';
+            feedback.classList.toggle('alert-danger', !result.success);
+            feedback.classList.toggle('alert-info', !!result.success);
+            feedback.textContent = result.success
+                ? 'Report submitted. It is now visible to responders and on the incident board.'
+                : (result.message || 'Unable to save report.');
             if (result.success) {
                 form.reset();
                 renderPins();
@@ -108,11 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', function (event) {
         if (event.target.classList.contains('delete-pin')) {
             const id = event.target.getAttribute('data-id');
-            fetch('./api/map_incidents.php?id=' + id, { method: 'DELETE' }).then(function () { window.location.reload(); });
+            fetch(apiUrl + '?id=' + id, { method: 'DELETE' }).then(function () { renderPins(); });
         }
         if (event.target.classList.contains('resolve-pin')) {
             const id = event.target.getAttribute('data-id');
-            fetch('./api/map_incidents.php', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, status: 'resolved' }) }).then(function () { window.location.reload(); });
+            fetch(apiUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id, status: 'resolved' }) }).then(function () { renderPins(); });
         }
     });
 });

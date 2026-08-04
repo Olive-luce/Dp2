@@ -23,7 +23,7 @@ include_once __DIR__ . '/../includes/header.php';
                 <div class="mb-3"><label class="form-label">GPS Longitude</label><input class="form-control" id="longitude"></div>
                 <div class="mb-3"><label class="form-label">Assigned Responder</label><input class="form-control" id="assignedTo"></div>
                 <div class="mb-3"><label class="form-label">Reporter</label><input class="form-control" id="reporter" value="admin" required></div>
-                <div class="mb-3"><label class="form-label">Photo Upload</label><input type="file" class="form-control" id="photo"></div>
+                <div class="mb-3"><label class="form-label">Location</label><input class="form-control" id="address" placeholder="Street / landmark"></div>
                 <button class="btn btn-primary w-100" type="submit">Save Incident</button>
             </form>
         </div>

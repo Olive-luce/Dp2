@@ -50,8 +50,9 @@ $assignments = $assignmentsStmt->fetchAll();
             <p class="mb-2"><strong>Status:</strong> <?php echo htmlspecialchars($volunteer['status'] ?? 'active'); ?></p>
             <p class="mb-3"><strong>Skills:</strong> <?php echo htmlspecialchars(implode(', ', array_map(function ($s) { return $s['skill_name']; }, $skills))); ?></p>
             <div class="d-grid gap-2">
+                <a class="btn btn-outline-primary" href="<?php echo BASE_URL; ?>/volunteer/tasks.php"><i class="fa-solid fa-list-check me-2"></i>View My Tasks</a>
+                <a class="btn btn-outline-primary" href="<?php echo BASE_URL; ?>/volunteer/checkin.php"><i class="fa-solid fa-location-crosshairs me-2"></i>Check In</a>
                 <a class="btn btn-outline-primary" href="<?php echo BASE_URL; ?>/modules/incidents/map.php"><i class="fa-solid fa-map-location-dot me-2"></i>View Incident Locations</a>
-                <a class="btn btn-outline-primary" href="<?php echo BASE_URL; ?>/citizen/communications.php"><i class="fa-solid fa-bell me-2"></i>Receive Notifications</a>
             </div>
         </div>
     </div>
