@@ -1,0 +1,117 @@
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-3);
+    align-items: stretch;
+}
+
+.dashboard-grid > * {
+    min-width: 0;
+}
+
+.stat-card {
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface-muted) 100%);
+}
+
+.stat-card .stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.stat-card .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.stat-card .stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(37, 99, 235, 0.12);
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.stat-card.success .stat-icon { background: rgba(22, 163, 74, 0.12); color: var(--success); }
+.stat-card.warning .stat-icon { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+.stat-card.danger .stat-icon { background: rgba(220, 38, 38, 0.12); color: var(--danger); }
+
+.hero-panel {
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    background: linear-gradient(120deg, #12335f 0%, var(--primary) 45%, #1d4ed8 100%);
+    color: white;
+    border: none;
+}
+
+.hero-panel::after {
+    content: '';
+    position: absolute;
+    inset: auto -8% -28% auto;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    filter: blur(6px);
+}
+
+.hero-panel .eyebrow,
+.hero-panel h1,
+.hero-panel p,
+.hero-panel .badge {
+    color: white;
+}
+
+.hero-panel .badge {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.6rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+}
+
+.hero-panel h1 {
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    max-width: 760px;
+}
+
+.hero-panel .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-3);
+}
+
+.chart-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+}
+
+.chart-card canvas {
+    flex: 1;
+    min-height: 240px;
+}
+
+.info-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.info-stack .info-item {
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+}
