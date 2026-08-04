@@ -51,6 +51,14 @@
     min-height: 320px;
 }
 
+.location-picker-map {
+    height: 260px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    z-index: 0;
+}
+
 .skeleton {
     display: block;
     width: 100%;

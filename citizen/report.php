@@ -14,6 +14,8 @@ $submitted = [
     'severity' => 'medium',
     'description' => '',
     'address' => '',
+    'latitude' => '',
+    'longitude' => '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'severity' => trim($_POST['severity'] ?? 'medium'),
         'description' => trim($_POST['description'] ?? ''),
         'address' => trim($_POST['address'] ?? ''),
+        'latitude' => trim($_POST['latitude'] ?? ''),
+        'longitude' => trim($_POST['longitude'] ?? ''),
     ];
 
     if ($submitted['title'] === '') {
@@ -34,6 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($submitted['description'] === '') {
         $errors[] = 'Please describe what is happening.';
     }
+    if ($submitted['address'] === '' && $submitted['latitude'] === '') {
+        $errors[] = 'Pick the location on the map or type an address.';
+    }
 
     if (!$errors) {
         $incidentId = createIncident($pdo, [
@@ -43,13 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'severity' => $submitted['severity'],
             'priority' => $submitted['severity'],
             'status' => 'reported',
-            'latitude' => $_POST['latitude'] ?? null,
-            'longitude' => $_POST['longitude'] ?? null,
+            'latitude' => $submitted['latitude'] ?: null,
+            'longitude' => $submitted['longitude'] ?: null,
             'address' => $submitted['address'] ?: null,
         ], $userId);
 
         $success = 'Report #' . $incidentId . ' submitted. Responders can see it now.';
-        $submitted = ['title' => '', 'incident_type' => '', 'severity' => 'medium', 'description' => '', 'address' => ''];
+        $submitted = ['title' => '', 'incident_type' => '', 'severity' => 'medium', 'description' => '', 'address' => '', 'latitude' => '', 'longitude' => ''];
     }
 }
 
@@ -100,12 +107,14 @@ include_once __DIR__ . '/../includes/header.php';
                     <label class="form-label" for="description">Description</label>
                     <textarea class="form-control" id="description" name="description" rows="4" placeholder="Describe what is happening" required><?php echo htmlspecialchars($submitted['description']); ?></textarea>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label" for="address">Location</label>
-                    <input class="form-control" id="address" name="address" value="<?php echo htmlspecialchars($submitted['address']); ?>" placeholder="Street / landmark">
-                </div>
+                <?php
+                $pickerLabel = 'Location';
+                $pickerAddress = $submitted['address'];
+                $pickerLatitude = $submitted['latitude'];
+                $pickerLongitude = $submitted['longitude'];
+                include __DIR__ . '/../includes/location_picker.php';
+                ?>
                 <button class="btn btn-primary" type="submit">Submit Report</button>
-                <a class="btn btn-outline-primary" href="<?php echo BASE_URL; ?>/modules/incidents/map.php"><i class="fa-solid fa-map-location-dot me-2"></i>Pin it on the map instead</a>
             </form>
         </div>
     </div>
