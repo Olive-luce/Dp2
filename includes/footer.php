@@ -14,5 +14,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="<?php echo BASE_URL; ?>/assets/js/app.js"></script>
 <script src="<?php echo BASE_URL; ?>/assets/js/map-app.js"></script>
+<script src="<?php echo BASE_URL; ?>/assets/js/location-picker.js"></script>
 </body>
 </html>
