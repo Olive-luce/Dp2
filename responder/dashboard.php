@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['responder']);
+$pageTitle = 'Responder Dashboard';
+$pageSubtitle = 'Field operations, assignments, and live incident status.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row g-4 mb-4">

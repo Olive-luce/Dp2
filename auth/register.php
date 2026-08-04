@@ -37,6 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$pageTitle = 'Create Account';
+$pageSubtitle = 'Join the community disaster response network.';
+
+$skipPageHeader = true;
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-card">

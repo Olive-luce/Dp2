@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['admin']);
+$pageTitle = 'Shelter Management';
+$pageSubtitle = 'Monitor shelter capacity, occupancy, and status.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row g-4">

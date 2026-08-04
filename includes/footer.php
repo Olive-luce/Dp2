@@ -1,4 +1,8 @@
                 </main>
+                <footer class="page-footer">
+                    <span><strong><?php echo APP_NAME; ?></strong> &middot; Emergency Operations Center</span>
+                    <span>&copy; <?php echo date('Y'); ?> Community Disaster Response</span>
+                </footer>
             </div>
         </div>
     </div>

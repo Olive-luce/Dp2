@@ -67,6 +67,11 @@ body[data-theme="dark"] .glass-card {
     letter-spacing: 0.02em;
 }
 
+.badge {
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
 .badge-primary {
     background: rgba(37, 99, 235, 0.12);
     color: var(--primary);
@@ -134,6 +139,22 @@ body[data-theme="dark"] .glass-card {
     color: var(--text-secondary);
     background: var(--surface);
 }
+
+.btn-outline-success {
+    border-color: var(--border);
+    color: var(--success);
+    background: var(--surface);
+}
+
+.btn-outline-danger {
+    border-color: var(--border);
+    color: var(--danger);
+    background: var(--surface);
+}
+
+.btn-outline-primary:hover { border-color: var(--primary); }
+.btn-outline-success:hover { border-color: var(--success); }
+.btn-outline-danger:hover { border-color: var(--danger); }
 
 .btn.is-loading {
     position: relative;

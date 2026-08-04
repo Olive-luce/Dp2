@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['citizen', 'volunteer']);
+$pageTitle = 'Public Advisories';
+$pageSubtitle = 'Latest announcements from the operations center.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row g-4">

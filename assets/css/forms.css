@@ -3,6 +3,16 @@
     margin: 0 auto;
 }
 
+.auth-card {
+    width: 100%;
+    max-width: 520px;
+    margin: var(--spacing-4) auto;
+}
+
+.auth-card .glass-card {
+    border-radius: var(--radius-lg);
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -49,6 +59,16 @@
 .form-textarea {
     min-height: 120px;
     resize: vertical;
+}
+
+.form-control::placeholder,
+.form-textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.75;
+}
+
+.form-check-input {
+    accent-color: var(--primary);
 }
 
 .form-actions {

@@ -7,7 +7,8 @@ requireAuth(['citizen']);
 $pageTitle = 'Citizen Dashboard';
 $pageSubtitle = 'Track public safety updates and access the services you need.';
 $pageActions = '<a href="' . BASE_URL . '/citizen/report.php" class="btn btn-primary"><i class="fa-solid fa-exclamation me-2"></i>Report Incident</a>';
-$pageContent = <<<'HTML'
+$baseUrl = BASE_URL;
+$pageContent = <<<HTML
 <div class="dashboard-grid">
     <div class="card stat-card">
         <div class="d-flex justify-content-between align-items-start">
@@ -60,9 +61,9 @@ $pageContent = <<<'HTML'
             </div>
         </div>
         <div class="card-body">
-            <a class="btn btn-outline-primary w-100 mb-2" href="' . BASE_URL . '/citizen/report.php"><i class="fa-solid fa-exclamation me-2"></i>Report Incident</a>
-            <a class="btn btn-outline-primary w-100 mb-2" href="' . BASE_URL . '/modules/incidents/map.php"><i class="fa-solid fa-map-location-dot me-2"></i>View Disaster Map</a>
-            <a class="btn btn-outline-primary w-100" href="' . BASE_URL . '/citizen/shelters.php"><i class="fa-solid fa-person-shelter me-2"></i>View Nearby Shelters</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{$baseUrl}/citizen/report.php"><i class="fa-solid fa-exclamation me-2"></i>Report Incident</a>
+            <a class="btn btn-outline-primary w-100 mb-2" href="{$baseUrl}/modules/incidents/map.php"><i class="fa-solid fa-map-location-dot me-2"></i>View Disaster Map</a>
+            <a class="btn btn-outline-primary w-100" href="{$baseUrl}/citizen/shelters.php"><i class="fa-solid fa-person-shelter me-2"></i>View Nearby Shelters</a>
         </div>
     </div>
 </div>

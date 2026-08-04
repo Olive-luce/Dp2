@@ -31,6 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = 'Invalid credentials. Please try again.';
 }
 
+$pageTitle = 'Sign In';
+$pageSubtitle = 'Access your disaster coordination dashboard.';
+
+$skipPageHeader = true;
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-card">

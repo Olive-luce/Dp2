@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['admin']);
+$pageTitle = 'Incident Management';
+$pageSubtitle = 'Create, assign, and resolve disaster incidents.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row g-4">
@@ -26,12 +29,18 @@ include_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
     <div class="col-lg-8">
-        <div class="card p-4">
-            <h3 class="fw-bold mb-3">Incident Records</h3>
+        <div class="card table-card">
+            <div class="table-toolbar">
+                <div>
+                    <h3 class="card-title">Incident Records</h3>
+                    <p class="card-subtitle">Live feed of reported incidents across all zones.</p>
+                </div>
+                <input type="search" id="incidentSearch" class="form-control table-search" placeholder="Search incidents" aria-label="Search incidents">
+            </div>
             <div class="table-responsive">
-                <table id="incidentTable" class="table table-hover">
+                <table id="incidentTable" class="table">
                     <thead>
-                        <tr><th>Title</th><th>Type</th><th>Severity</th><th>Status</th><th>Priority</th><th>Reporter</th><th>Responder</th><th>Actions</th></tr>
+                        <tr><th>Title</th><th>Type</th><th>Severity</th><th>Status</th><th>Reporter</th><th>Responder</th><th>Actions</th></tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -40,6 +49,4 @@ include_once __DIR__ . '/../includes/header.php';
     </div>
 </div>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="<?php echo BASE_URL; ?>/assets/js/incident-management.js"></script>

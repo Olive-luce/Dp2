@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['volunteer']);
+$pageTitle = 'Volunteer Dashboard';
+$pageSubtitle = 'Your assignments, skills, and availability at a glance.';
+
 include_once __DIR__ . '/../includes/header.php';
 
 $userId = (int)($_SESSION['user_id'] ?? 0);

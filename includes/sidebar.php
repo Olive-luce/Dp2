@@ -9,7 +9,7 @@ $dashboardMap = [
 $dashboard = $dashboardMap[$role] ?? 'index.php';
 $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
 $activeClass = function ($target) use ($currentPath) {
-    return strpos($currentPath, $target) === 0 ? 'active' : '';
+    return substr($currentPath, -strlen($target)) === $target ? 'active' : '';
 };
 ?>
 <nav class="sidebar" id="sidebarMenu" aria-label="Sidebar navigation">

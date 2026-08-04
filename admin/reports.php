@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['admin']);
+$pageTitle = 'Operational Reports';
+$pageSubtitle = 'Analyse incident trends and response performance.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="row g-4 mb-4">

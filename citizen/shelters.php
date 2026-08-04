@@ -3,6 +3,9 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireAuth(['citizen']);
+$pageTitle = 'Nearby Shelters';
+$pageSubtitle = 'Find open shelters and current capacity.';
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="card p-4">

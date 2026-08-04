@@ -3,6 +3,11 @@ require_once __DIR__ . '/../config/dbconnection.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 requireGuest();
+$pageTitle = 'Reset Password';
+$pageSubtitle = 'Recover access to your account.';
+
+$skipPageHeader = true;
+
 include_once __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-card">
