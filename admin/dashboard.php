@@ -70,7 +70,7 @@ $pageContent = <<<HTML
             <p class="card-subtitle">A live view of incident zones and command posture.</p>
         </div>
     </div>
-    <div class="map-shell"><div id="map"></div></div>
+    <div class="map-shell"><div id="overviewMap" data-overview-map></div></div>
 </div>
 HTML;
 

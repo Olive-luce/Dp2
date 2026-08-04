@@ -121,15 +121,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize the interactive campus map when present.
-    var mapElement = document.getElementById('map');
+    // Initialize the read-only overview map when present.
+    var mapElement = document.querySelector('[data-overview-map]');
     if (mapElement && window.L) {
-        var map = L.map('map').setView([14.5995, 120.9842], 12);
+        var map = L.map(mapElement).setView([23.8103, 90.4125], 7);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
-        L.marker([14.5995, 120.9842]).addTo(map).bindPopup('Emergency Coordination HQ').openPopup();
-        L.marker([14.6200, 121.0000]).addTo(map).bindPopup('Incident Zone 2');
+        L.marker([23.8103, 90.4125]).addTo(map).bindPopup('Emergency Coordination HQ, Dhaka').openPopup();
+        L.marker([22.3569, 91.7832]).addTo(map).bindPopup('Chattogram Response Hub');
+        L.marker([24.3745, 88.6042]).addTo(map).bindPopup('Rajshahi Response Hub');
     }
 
     // Populate the incident feed on the landing page when available.
