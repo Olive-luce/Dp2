@@ -66,13 +66,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const latitudeInput = document.getElementById('latitude');
     const longitudeInput = document.getElementById('longitude');
 
+    let selectedAddress = '';
+
     map.on('click', function (e) {
         const lat = e.latlng.lat.toFixed(6);
         const lng = e.latlng.lng.toFixed(6);
         latitudeInput.value = lat;
         longitudeInput.value = lng;
-        const popup = L.popup().setLatLng(e.latlng).setContent('<strong>Selected Location</strong><br>Latitude: ' + lat + '<br>Longitude: ' + lng).openOn(map);
-        setTimeout(function () { map.closePopup(popup); }, 2500);
+        selectedAddress = '';
+
+        const popup = L.popup().setLatLng(e.latlng).setContent('<strong>Selected location</strong><br>Looking up the address…').openOn(map);
+
+        fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=16&lat=' + lat + '&lon=' + lng, { headers: { Accept: 'application/json' } })
+            .then(function (response) { return response.json(); })
+            .then(function (data) {
+                selectedAddress = data && data.display_name ? data.display_name : '';
+                popup.setContent('<strong>Selected location</strong><br>' + escapeHtml(selectedAddress || lat + ', ' + lng));
+            })
+            .catch(function () {
+                popup.setContent('<strong>Selected location</strong><br>' + escapeHtml(lat + ', ' + lng));
+            });
     });
 
     document.getElementById('searchLocation').addEventListener('click', function () {
@@ -110,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             severity: document.getElementById('severity').value,
             description: document.getElementById('description').value,
             reporter: document.getElementById('reporter').value,
-            address: latitudeInput.value + ', ' + longitudeInput.value,
+            address: selectedAddress || latitudeInput.value + ', ' + longitudeInput.value,
             status: 'reported'
         };
 
@@ -127,6 +140,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 : (result.message || 'Unable to save report.');
             if (result.success) {
                 form.reset();
+                selectedAddress = '';
+                latitudeInput.value = '';
+                longitudeInput.value = '';
                 renderPins();
             }
         });

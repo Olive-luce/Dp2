@@ -91,11 +91,11 @@ document.addEventListener('DOMContentLoaded', function () {
             severity: document.getElementById('severity').value,
             priority: document.getElementById('priority').value,
             status: document.getElementById('status').value,
-            latitude: document.getElementById('latitude').value,
-            longitude: document.getElementById('longitude').value,
+            latitude: form.querySelector('[data-picker-lat]').value,
+            longitude: form.querySelector('[data-picker-lng]').value,
             assigned_to: document.getElementById('assignedTo').value,
             reporter: document.getElementById('reporter').value,
-            address: document.getElementById('address').value
+            address: form.querySelector('[data-picker-address]').value
         };
         fetch(apiUrl, {
             method: 'POST',
