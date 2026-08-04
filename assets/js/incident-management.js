@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tbody = table.querySelector('tbody');
     const searchInput = document.getElementById('incidentSearch');
     const columnCount = table.querySelectorAll('thead th').length;
+    const apiUrl = (document.body.dataset.baseUrl || '') + '/api/incidents_crud.php';
     let incidents = [];
 
     const escapeHtml = function (value) {
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const loadIncidents = function () {
         tbody.innerHTML = '<tr><td class="table-empty" colspan="' + columnCount + '"><span class="skeleton"></span></td></tr>';
-        fetch('./../api/incidents_crud.php')
+        fetch(apiUrl)
             .then(function (response) { return response.json(); })
             .then(function (data) {
                 incidents = Array.isArray(data) ? data : [];
@@ -94,9 +95,9 @@ document.addEventListener('DOMContentLoaded', function () {
             longitude: document.getElementById('longitude').value,
             assigned_to: document.getElementById('assignedTo').value,
             reporter: document.getElementById('reporter').value,
-            photo: document.getElementById('photo').value
+            address: document.getElementById('address').value
         };
-        fetch('./../api/incidents_crud.php', {
+        fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -117,13 +118,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!target) return;
         const id = target.getAttribute('data-id');
         if (target.classList.contains('delete-incident')) {
-            fetch('./../api/incidents_crud.php?id=' + id, { method: 'DELETE' }).then(function () {
+            fetch(apiUrl + '?id=' + id, { method: 'DELETE' }).then(function () {
                 if (window.showToast) { window.showToast('Incident deleted.', 'info'); }
                 loadIncidents();
             });
         }
         if (target.classList.contains('resolve-incident')) {
-            fetch('./../api/incidents_crud.php', {
+            fetch(apiUrl, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id, status: 'resolved' })

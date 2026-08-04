@@ -20,7 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
 </head>
-<body data-role="<?php echo htmlspecialchars($_SESSION['role'] ?? 'citizen'); ?>">
+<body data-role="<?php echo htmlspecialchars($_SESSION['role'] ?? 'citizen'); ?>" data-base-url="<?php echo htmlspecialchars(BASE_URL); ?>">
 <a class="skip-link" href="#mainContent">Skip to content</a>
 <div class="page-loader" id="page-loader">
     <div class="spinner-border text-light" role="status" aria-label="Loading dashboard"></div>

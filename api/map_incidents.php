@@ -1,17 +1,17 @@
 <?php
 require_once __DIR__ . '/../config/dbconnection.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/incidents.php';
+
 header('Content-Type: application/json');
 
-if ($pdo === null) {
-    echo json_encode(['success' => false, 'message' => 'Database unavailable']);
-    exit;
-}
+requireApiAuth();
 
 $method = $_SERVER['REQUEST_METHOD'];
+$userId = (int) ($_SESSION['user_id'] ?? 0);
 
 if ($method === 'GET') {
-    $stmt = $pdo->query('SELECT id, latitude, longitude, incident_type, severity, description, created_at, reporter FROM incident_map_reports ORDER BY created_at DESC');
-    echo json_encode($stmt->fetchAll());
+    echo json_encode(fetchIncidents($pdo, ['mapped' => true]));
     exit;
 }
 
@@ -19,47 +19,59 @@ if ($method === 'POST') {
     $payload = json_decode(file_get_contents('php://input'), true) ?? $_POST;
     $latitude = $payload['latitude'] ?? null;
     $longitude = $payload['longitude'] ?? null;
-    $incidentType = $payload['incident_type'] ?? null;
-    $severity = $payload['severity'] ?? null;
-    $description = $payload['description'] ?? null;
-    $reporter = $payload['reporter'] ?? 'Anonymous';
-    $address = $payload['address'] ?? null;
-    $status = $payload['status'] ?? 'reported';
+    $incidentType = trim($payload['incident_type'] ?? '');
+    $description = trim($payload['description'] ?? '');
 
-    if ($latitude === null || $longitude === null || $incidentType === null || $severity === null || $description === null) {
-        echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+    if ($latitude === null || $latitude === '' || $longitude === null || $longitude === '' || !$incidentType || !$description) {
+        echo json_encode(['success' => false, 'message' => 'Location, incident type, and description are required']);
         exit;
     }
 
-    $stmt = $pdo->prepare('INSERT INTO incident_map_reports (latitude, longitude, incident_type, severity, description, address, reporter, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-    $success = $stmt->execute([$latitude, $longitude, $incidentType, $severity, $description, $address, $reporter, $status]);
+    $address = trim($payload['address'] ?? '');
+    $incidentId = createIncident($pdo, [
+        'title' => $incidentType . ' reported' . ($address ? ' near ' . $address : ''),
+        'description' => $description,
+        'incident_type' => $incidentType,
+        'severity' => $payload['severity'] ?? 'medium',
+        'priority' => $payload['severity'] ?? 'medium',
+        'status' => 'reported',
+        'latitude' => $latitude,
+        'longitude' => $longitude,
+        'address' => $address ?: null,
+    ], $userId);
 
-    echo json_encode(['success' => $success, 'id' => $pdo->lastInsertId()]);
-    exit;
-}
-
-if ($method === 'DELETE') {
-    $id = $_GET['id'] ?? null;
-    if ($id === null) {
-        echo json_encode(['success' => false, 'message' => 'Missing id']);
-        exit;
-    }
-    $stmt = $pdo->prepare('DELETE FROM incident_map_reports WHERE id = ?');
-    $success = $stmt->execute([$id]);
-    echo json_encode(['success' => $success]);
+    echo json_encode(['success' => true, 'id' => $incidentId]);
     exit;
 }
 
 if ($method === 'PUT') {
+    requireApiRole(['admin', 'responder']);
+
     $payload = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id = $payload['id'] ?? null;
+    $id = (int) ($payload['id'] ?? 0);
     $status = $payload['status'] ?? null;
-    if ($id === null || $status === null) {
+
+    if (!$id || $status === null) {
         echo json_encode(['success' => false, 'message' => 'Missing id or status']);
         exit;
     }
-    $stmt = $pdo->prepare('UPDATE incident_map_reports SET status = ? WHERE id = ?');
-    $success = $stmt->execute([$status, $id]);
-    echo json_encode(['success' => $success]);
+
+    echo json_encode(['success' => setIncidentStatus($pdo, $id, (string) $status)]);
     exit;
 }
+
+if ($method === 'DELETE') {
+    requireApiRole(['admin']);
+
+    $id = (int) ($_GET['id'] ?? 0);
+    if (!$id) {
+        echo json_encode(['success' => false, 'message' => 'Missing id']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare('DELETE FROM disaster_incidents WHERE id = ?');
+    echo json_encode(['success' => $stmt->execute([$id])]);
+    exit;
+}
+
+echo json_encode(['success' => false, 'message' => 'Unsupported request']);
